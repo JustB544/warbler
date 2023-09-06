@@ -26,33 +26,35 @@ from app import app
 # once for all tests --- in each test, we'll delete the data
 # and create fresh new clean test data
 
-db.create_all()
+with app.app_context():
+
+    db.create_all()
 
 
-class UserModelTestCase(TestCase):
-    """Test views for messages."""
+    class UserModelTestCase(TestCase):
+        """Test views for messages."""
 
-    def setUp(self):
-        """Create test client, add sample data."""
+        def setUp(self):
+            """Create test client, add sample data."""
 
-        User.query.delete()
-        Message.query.delete()
-        Follows.query.delete()
+            User.query.delete()
+            Message.query.delete()
+            Follows.query.delete()
 
-        self.client = app.test_client()
+            self.client = app.test_client()
 
-    def test_user_model(self):
-        """Does basic model work?"""
+        def test_user_model(self):
+            """Does basic model work?"""
 
-        u = User(
-            email="test@test.com",
-            username="testuser",
-            password="HASHED_PASSWORD"
-        )
+            u = User(
+                email="test@test.com",
+                username="testuser",
+                password="HASHED_PASSWORD"
+            )
 
-        db.session.add(u)
-        db.session.commit()
+            db.session.add(u)
+            db.session.commit()
 
-        # User should have no messages & no followers
-        self.assertEqual(len(u.messages), 0)
-        self.assertEqual(len(u.followers), 0)
+            # User should have no messages & no followers
+            self.assertEqual(len(u.messages), 0)
+            self.assertEqual(len(u.followers), 0)
