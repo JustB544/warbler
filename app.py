@@ -299,7 +299,6 @@ def messages_destroy(message_id):
 ##############################################################################
 # Homepage and error pages
 
-
 @app.route('/')
 def homepage():
     """Show homepage:
@@ -309,12 +308,13 @@ def homepage():
     """
 
     if g.user:
+        users = [user.id for user in [*g.user.following, g.user]]
         messages = (Message
                     .query
+                    .filter(Message.user_id.in_(users))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
-
         return render_template('home.html', messages=messages)
 
     else:
